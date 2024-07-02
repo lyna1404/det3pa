@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.10'  
+
+    - name: Install Miniconda on Windows
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        auto-update-conda: true
+
+    - name: Create Conda environment
+      run: |
+        conda env create -f environment.yaml
+
+    - name: Activate Conda environment and run tests
+      run: |
+        conda activate det3pa
+        python -m unittest discover -s tests
+      shell: cmd
